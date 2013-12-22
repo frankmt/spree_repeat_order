@@ -29,6 +29,11 @@ describe Spree::RepeatedOrdersController do
       response.should be_redirect
     end
 
+    it 'should show success flash message' do
+      spree_post :create, number: "ABC1"
+      flash[:success].should =~ /added your past order items to the cart/
+    end
+
   end
 
   describe "integration" do

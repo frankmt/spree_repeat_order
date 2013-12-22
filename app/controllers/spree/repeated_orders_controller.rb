@@ -13,6 +13,8 @@ module Spree
       new_order.line_items = new_line_items
       new_order.save
 
+      flash[:success] = 'We have added your past order items to the cart. Just proceed to checkout to complete it.'
+
       redirect_to(cart_path)
     end
 
