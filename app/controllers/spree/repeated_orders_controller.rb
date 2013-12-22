@@ -2,7 +2,7 @@ module Spree
   class RepeatedOrdersController < Spree::StoreController
 
     def create
-      duplicated_order = Spree::Order.find(params[:id])
+      duplicated_order = Spree::Order.find_by(number: params[:number])
       new_order = current_order(true)
 
       new_line_items = []

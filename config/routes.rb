@@ -1,5 +1,5 @@
 Spree::Core::Engine.routes.append do
 
-  post '/orders/:id/repeated_order' => 'repeated_orders#create'
+  post '/orders/:number/repeated_order' => 'repeated_orders#create', as: :repeat_order
 
 end

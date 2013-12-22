@@ -13,6 +13,7 @@
         = Spree.t(:shipment_state)
       %th.order-total
         = Spree.t(:total)
+      %th
   %tbody
     - @orders.each do |order|
       %tr
@@ -28,3 +29,8 @@
           = Spree.t("shipment_states.#{order.shipment_state}").titleize if order.shipment_state
         %td.order-total
           = order.display_total
+        %td.repeat-order
+          = form_tag repeat_order_path(order.number), method: :post do
+            .fields
+              = button_tag :class => 'large primary add-button', :type => :submit do
+                = Spree.t(:repeat_order)

@@ -13,7 +13,7 @@ describe Spree::RepeatedOrdersController do
     let(:line_item_clone_2){ FactoryGirl.build(:line_item) }
 
     before :each do
-      Spree::Order.stub(:find).and_return(past_order)
+      Spree::Order.stub(:find_by).and_return(past_order)
       controller.stub(:current_order).and_return(new_order)
     end
 
@@ -25,7 +25,7 @@ describe Spree::RepeatedOrdersController do
       new_order.should_receive(:line_items=).with([line_item_clone_1, line_item_clone_2])
       new_order.should_receive(:save).and_return(true)
 
-      spree_post :create, id: "ABC1"
+      spree_post :create, number: "ABC1"
       response.should be_redirect
     end
 
@@ -37,7 +37,7 @@ describe Spree::RepeatedOrdersController do
       past_order = FactoryGirl.create(:order)
       line_item = FactoryGirl.create(:line_item, order: past_order)
 
-      spree_post :create, id: past_order.id
+      spree_post :create, number: past_order.number
 
       last_order = Spree::Order.last
       last_order.line_items.count.should == 1
