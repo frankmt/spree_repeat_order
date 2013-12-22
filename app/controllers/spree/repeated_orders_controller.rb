@@ -11,9 +11,12 @@ module Spree
       end
 
       new_order.line_items = new_line_items
-      new_order.save
 
-      flash[:success] = 'We have added your past order items to the cart. Just proceed to checkout to complete it.'
+      if new_order.save
+        flash[:success] = 'We have added your past order items to the cart. Just proceed to checkout to complete it.'
+      else
+        flash[:error] = 'We are sorry, but we could not add your past items to the cart.'
+      end
 
       redirect_to(cart_path)
     end

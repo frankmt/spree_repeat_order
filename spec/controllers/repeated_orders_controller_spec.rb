@@ -34,6 +34,12 @@ describe Spree::RepeatedOrdersController do
       flash[:success].should =~ /added your past order items to the cart/
     end
 
+    it 'should show failure flash message if save fails' do
+      new_order.should_receive(:save).and_return(false)
+      spree_post :create, number: "ABC1"
+      flash[:error].should =~ /could not add your past items to the cart/
+    end
+
   end
 
   describe "integration" do
