@@ -1,16 +1,13 @@
 module Spree
   class RepeatedOrdersController < Spree::StoreController
 
+    before_filter :check_authorization
+
     def create
-      duplicated_order = Spree::Order.find_by(number: params[:number])
+      past_order = Spree::Order.find_by(number: params[:number])
       new_order = current_order(true)
 
-      new_line_items = []
-      duplicated_order.line_items.each do |line_item|
-        new_line_items << line_item.dup
-      end
-
-      new_order.line_items = new_line_items
+      duplicate_order(past_order, new_order)
 
       if new_order.save
         flash[:success] = 'We have added your past order items to the cart. Just proceed to checkout to complete it.'
@@ -19,6 +16,24 @@ module Spree
       end
 
       redirect_to(cart_path)
+    end
+
+    private
+
+    def duplicate_order(past_order, new_order)
+      new_line_items = []
+      past_order.line_items.each do |line_item|
+        new_line_items << line_item.dup
+      end
+
+      new_order.line_items = new_line_items
+    end
+
+    def check_authorization
+      session[:access_token] ||= params[:token]
+
+      order = Spree::Order.find_by_number(params[:number])
+      authorize! :edit, order, session[:access_token]
     end
 
   end
