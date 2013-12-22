@@ -13,7 +13,7 @@ module Spree
       new_order.line_items = new_line_items
       new_order.save
 
-      render json: {}, status: 201
+      redirect_to(cart_path)
     end
 
   end
