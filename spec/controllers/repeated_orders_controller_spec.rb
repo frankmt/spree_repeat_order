@@ -14,7 +14,6 @@ describe Spree::RepeatedOrdersController do
     let(:line_item_clone_1){ FactoryGirl.build(:line_item) }
     let(:line_item_clone_2){ FactoryGirl.build(:line_item) }
 
-
     before :each do
       Spree::Order.stub(:find_by).and_return(past_order)
       controller.stub(:current_order).and_return(new_order)
