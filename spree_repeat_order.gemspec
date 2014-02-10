@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_repeat_order'
-  s.version     = '2.1.3'
+  s.version     = '2.1.4'
   s.summary     = 'Makes it possible to repeat an existing order with one click'
   s.description = ''
   s.required_ruby_version = '>= 2.0.0'
