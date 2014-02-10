@@ -1,5 +1,5 @@
 module Spree
-  module Admin 
+  module Admin
     class RepeatedOrdersController < Spree::Admin::BaseController
 
       def create
@@ -9,9 +9,9 @@ module Spree
         duplicate_order(past_order, new_order)
 
         if new_order.save
-          flash[:success] = 'We have added your past order items to the cart. Just proceed to checkout to complete it.'
+          flash[:success] = "The order has been duplicated. The new order id is #{new_order.number}"
         else
-          flash[:error] = 'We are sorry, but we could not add your past items to the cart.'
+          flash[:error] = 'Oops.. something went wrong and the order could not be duplicated'
         end
 
         redirect_to(admin_orders_path)
