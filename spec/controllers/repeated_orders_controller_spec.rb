@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Spree::RepeatedOrdersController do
 
+  let(:user) { mock_model Spree::User, :last_incomplete_spree_order => nil, :has_spree_role? => true, :spree_api_key => 'fake' }
+
   describe "create" do
 
     let(:line_item_1){ FactoryGirl.build(:line_item) }
@@ -12,13 +14,16 @@ describe Spree::RepeatedOrdersController do
     let(:line_item_clone_1){ FactoryGirl.build(:line_item) }
     let(:line_item_clone_2){ FactoryGirl.build(:line_item) }
 
+
     before :each do
       Spree::Order.stub(:find_by).and_return(past_order)
       controller.stub(:current_order).and_return(new_order)
+      controller.stub :spree_current_user => user
+      controller.stub :check_authorization
     end
 
     it 'should create new order with same line items' do
-      controller.should_receive(:current_order).and_return(new_order)
+      controller.should_receive(:current_order).at_least(:once).and_return(new_order)
       line_item_1.should_receive(:dup).and_return(line_item_clone_1)
       line_item_2.should_receive(:dup).and_return(line_item_clone_2)
 
@@ -43,6 +48,11 @@ describe Spree::RepeatedOrdersController do
   end
 
   describe "integration" do
+
+    before :each do
+      controller.stub :spree_current_user => user
+      controller.stub :check_authorization
+    end
 
     it 'should create new order with same line items' do
       past_order = FactoryGirl.create(:order)
