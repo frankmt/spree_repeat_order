@@ -11,7 +11,9 @@ describe Spree::Admin::RepeatedOrdersController do
   let(:past_order){ FactoryGirl.build(:order, {
     line_items: [line_item_1, line_item_2],
     ship_address: ship_address,
-    bill_address: bill_address
+    bill_address: bill_address,
+    completed_at: Date.yesterday,
+    number: 'ABC1'
   }) }
 
   let(:new_order){ double(Spree::Order).as_null_object }
@@ -57,7 +59,12 @@ describe Spree::Admin::RepeatedOrdersController do
       spree_post :create, number: "ABC1"
     end
 
-    it 'should fail if original order is not complete'
+    it 'should fail if original order is not complete' do
+      past_order.stub(:completed_at).and_return nil
+
+      spree_post :create, number: "ABC1"
+      response.should redirect_to('/admin/orders/ABC1')
+    end
 
   end
 

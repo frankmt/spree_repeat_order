@@ -8,13 +8,14 @@ module Spree
 
         duplicate_order(past_order, new_order)
 
-        if new_order.save
+        if past_order.completed_at && new_order.save
           flash[:success] = "The order has been duplicated. The new order id is #{new_order.number}"
+          redirect_to(admin_orders_path)
         else
           flash[:error] = 'Oops.. something went wrong and the order could not be duplicated'
+          redirect_to(admin_order_path(past_order.number))
         end
 
-        redirect_to(admin_orders_path)
       end
 
       private
