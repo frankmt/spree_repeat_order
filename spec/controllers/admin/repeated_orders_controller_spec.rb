@@ -78,16 +78,17 @@ describe Spree::Admin::RepeatedOrdersController do
     it 'should create new order with same line items' do
       ship_address = FactoryGirl.create(:address)
       bill_address = FactoryGirl.create(:address)
-      past_order = FactoryGirl.create(:order, ship_address: ship_address, bill_address: bill_address)
-      line_item = FactoryGirl.create(:line_item, order: past_order)
+      past_order = FactoryGirl.create(:completed_order_with_totals, ship_address: ship_address, bill_address: bill_address)
 
       spree_post :create, number: past_order.number
+      response.should redirect_to('/admin/orders')
 
       last_order = Spree::Order.last
-      last_order.line_items.count.should == 1
+      last_order.line_items.count.should == past_order.line_items.count
+      last_order.state.should == 'delivery'
+      last_order.ship_address.firstname = past_order.ship_address.firstname
+      last_order.bill_address.firstname = past_order.bill_address.firstname
     end
-
-    it 'should save order in delivery state'
 
   end
 

@@ -8,7 +8,13 @@ module Spree
 
         duplicate_order(past_order, new_order)
 
-        if past_order.completed_at && new_order.save
+        success = true
+        success = success && !past_order.completed_at.blank?
+        success = success && new_order.save
+        success = success && new_order.next #ADDRESS
+        success = success && new_order.next #DELIVERY
+
+        if success
           flash[:success] = "The order has been duplicated. The new order id is #{new_order.number}"
           redirect_to(admin_orders_path)
         else
@@ -21,6 +27,8 @@ module Spree
       private
 
       def duplicate_order(past_order, new_order)
+        new_order.email = past_order.email
+
         new_line_items = []
         past_order.line_items.each do |line_item|
           new_line_items << line_item.dup
