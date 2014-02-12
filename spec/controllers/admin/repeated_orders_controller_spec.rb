@@ -85,7 +85,7 @@ describe Spree::Admin::RepeatedOrdersController do
 
       last_order = Spree::Order.last
       last_order.line_items.count.should == past_order.line_items.count
-      last_order.state.should == 'delivery'
+      last_order.state.should == 'cart'
       last_order.ship_address.firstname = past_order.ship_address.firstname
       last_order.bill_address.firstname = past_order.bill_address.firstname
     end

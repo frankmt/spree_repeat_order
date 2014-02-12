@@ -11,8 +11,6 @@ module Spree
         success = true
         success = success && !past_order.completed_at.blank?
         success = success && new_order.save
-        success = success && new_order.next #ADDRESS
-        success = success && new_order.next #DELIVERY
 
         if success
           flash[:success] = "The order has been duplicated. The new order id is #{new_order.number}"
