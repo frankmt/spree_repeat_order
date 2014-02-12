@@ -29,9 +29,8 @@ module Spree
         user = new_order.user
 
         user_last_incomplete_order = user.last_incomplete_spree_order
-        new_order.merge!(user_last_incomplete_order) if user_last_incomplete_order
-
-        true
+        new_order.merge!(user_last_incomplete_order, user) if user_last_incomplete_order
+        new_order.save
       end
 
       def duplicate_order(past_order, new_order)
@@ -49,6 +48,12 @@ module Spree
         new_order.ship_address = new_ship_address
         new_bill_address = past_order.bill_address.dup
         new_order.bill_address = new_bill_address
+
+        duplicate_extension(past_order, new_order)
+      end
+
+      def duplicate_extension(past_order, new_order)
+        #do nothing - only here so it can be overriden
       end
      
     end

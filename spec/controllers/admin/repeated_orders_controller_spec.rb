@@ -80,7 +80,7 @@ describe Spree::Admin::RepeatedOrdersController do
       it 'should merge last incomplete order with new order' do
         incomplete_order = double(Spree::Order)
         order_user.stub(:last_incomplete_spree_order).and_return(incomplete_order)
-        @new_order.should_receive(:merge!).with(incomplete_order)
+        @new_order.should_receive(:merge!).with(incomplete_order, order_user)
          
         spree_post :create, number: "ABC1"
       end
