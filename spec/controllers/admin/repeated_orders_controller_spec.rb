@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Spree::Admin::RepeatedOrdersController do
 
   let(:user) { mock_model Spree::User, :last_incomplete_spree_order => nil, :has_spree_role? => true, :spree_api_key => 'fake' }
+  let(:order_user) { mock_model(Spree::User, :last_incomplete_spree_order => nil, :has_spree_role? => true, :spree_api_key => 'fake').as_null_object }
 
   let(:ship_address){ FactoryGirl.build(:address) }
   let(:bill_address){ FactoryGirl.build(:address) }
@@ -13,7 +14,8 @@ describe Spree::Admin::RepeatedOrdersController do
     ship_address: ship_address,
     bill_address: bill_address,
     completed_at: Date.yesterday,
-    number: 'ABC1'
+    number: 'ABC1',
+    user: order_user
   }) }
 
   let(:new_order){ double(Spree::Order).as_null_object }
@@ -53,6 +55,7 @@ describe Spree::Admin::RepeatedOrdersController do
       ship_address.should_receive(:dup).and_return(new_ship_address)
       bill_address.should_receive(:dup).and_return(new_bill_address)
 
+      new_order.should_receive(:user=).with(order_user)
       new_order.should_receive(:ship_address=).with(new_ship_address)
       new_order.should_receive(:bill_address=).with(new_bill_address)
 
@@ -66,6 +69,32 @@ describe Spree::Admin::RepeatedOrdersController do
       response.should redirect_to('/admin/orders/ABC1')
     end
 
+    describe 'merging with current order' do
+
+      before :each do
+        @new_order = Spree::Order.new
+        @new_order.stub(:merge!)
+        Spree::Order.stub(:new).and_return(@new_order)
+      end
+
+      it 'should merge last incomplete order with new order' do
+        incomplete_order = double(Spree::Order)
+        order_user.stub(:last_incomplete_spree_order).and_return(incomplete_order)
+        @new_order.should_receive(:merge!).with(incomplete_order)
+         
+        spree_post :create, number: "ABC1"
+      end
+
+      it 'should not merge if user doesnt have a last incomplete order' do
+        order_user.stub(:last_incomplete_spree_order).and_return(nil)
+        @new_order.should_not_receive(:merge!)
+         
+        spree_post :create, number: "ABC1"
+      end
+
+
+    end
+
   end
 
   describe 'integration' do
@@ -76,6 +105,7 @@ describe Spree::Admin::RepeatedOrdersController do
     end
 
     it 'should create new order with same line items' do
+      user = FactoryGirl.create(:user)
       ship_address = FactoryGirl.create(:address)
       bill_address = FactoryGirl.create(:address)
       past_order = FactoryGirl.create(:completed_order_with_totals, ship_address: ship_address, bill_address: bill_address)

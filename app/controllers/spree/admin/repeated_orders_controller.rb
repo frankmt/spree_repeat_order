@@ -11,6 +11,7 @@ module Spree
         success = true
         success = success && !past_order.completed_at.blank?
         success = success && new_order.save
+        success = success && merge_with_current_order(new_order)
 
         if success
           flash[:success] = "The order has been duplicated. The new order id is #{new_order.number}"
@@ -24,8 +25,18 @@ module Spree
 
       private
 
+      def merge_with_current_order(new_order)
+        user = new_order.user
+
+        user_last_incomplete_order = user.last_incomplete_spree_order
+        new_order.merge!(user_last_incomplete_order) if user_last_incomplete_order
+
+        true
+      end
+
       def duplicate_order(past_order, new_order)
         new_order.email = past_order.email
+        new_order.user = past_order.user
 
         new_line_items = []
         past_order.line_items.each do |line_item|

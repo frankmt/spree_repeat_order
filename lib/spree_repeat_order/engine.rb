@@ -1,6 +1,8 @@
 module SpreeRepeatOrder
   class Engine < Rails::Engine
+
     require 'spree/core'
+
     isolate_namespace Spree
     engine_name 'spree_repeat_order'
 
