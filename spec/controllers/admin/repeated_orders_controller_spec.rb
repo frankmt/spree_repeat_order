@@ -5,6 +5,8 @@ describe Spree::Admin::RepeatedOrdersController do
   let(:user) { mock_model Spree::User, :last_incomplete_spree_order => nil, :has_spree_role? => true, :spree_api_key => 'fake' }
   let(:order_user) { mock_model(Spree::User, :last_incomplete_spree_order => nil, :has_spree_role? => true, :spree_api_key => 'fake').as_null_object }
 
+  let(:unavailable_product){ FactoryGirl.build(:product, available_on: nil)}
+
   let(:ship_address){ FactoryGirl.build(:address) }
   let(:bill_address){ FactoryGirl.build(:address) }
   let(:line_item_1){ FactoryGirl.build(:line_item) }
@@ -47,6 +49,23 @@ describe Spree::Admin::RepeatedOrdersController do
 
       spree_post :create, number: "ABC1"
       response.should be_redirect
+    end
+
+    it 'should skip items that dont exist or are not available' do
+      Spree::Order.should_receive(:find_by).with(number: 'ABC1').and_return(past_order)
+      Spree::Order.stub(:new).and_return(new_order)
+
+      line_item_1.should_receive(:product).at_least(:once).and_return nil
+      line_item_2.should_receive(:product).at_least(:once).and_return unavailable_product
+
+      line_item_1.should_not_receive(:dup)
+      line_item_2.should_not_receive(:dup)
+
+      new_order.should_receive(:line_items=).with([])
+      new_order.should_receive(:save).and_return(true)
+
+      spree_post :create, number: "ABC1"
+
     end
 
     it 'should create order with old customer details' do
