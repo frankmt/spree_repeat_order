@@ -2,11 +2,14 @@ module Spree
   module Admin
     class RepeatedOrdersController < Spree::Admin::BaseController
 
+      include Spree::SpreeRepeatedOrder::ControllerHelpers::RepeatedOrder
+
       def create
         past_order = Spree::Order.find_by(number: params[:number])
         new_order = Spree::Order.new
 
         duplicate_order(past_order, new_order)
+        duplicate_address(past_order, new_order)
 
         success = true
         success = success && !past_order.completed_at.blank?
@@ -33,16 +36,9 @@ module Spree
         new_order.save
       end
 
-      def duplicate_order(past_order, new_order)
+      def duplicate_address(past_order, new_order)
         new_order.email = past_order.email
         new_order.user = past_order.user
-
-        new_line_items = []
-        past_order.line_items.each do |line_item|
-          new_line_items << line_item.dup
-        end
-
-        new_order.line_items = new_line_items
 
         new_ship_address = past_order.ship_address.dup
         new_order.ship_address = new_ship_address
@@ -55,7 +51,7 @@ module Spree
       def duplicate_extension(past_order, new_order)
         #do nothing - only here so it can be overriden
       end
-     
+
     end
   end
 end
