@@ -35,6 +35,8 @@ describe Spree::Admin::RepeatedOrdersController do
 
     before :each do
       Spree::Order.stub(:find_by).and_return(past_order)
+      line_item_clone_1.stub(:reload_price)
+      line_item_clone_2.stub(:reload_price)
     end
 
     it 'should create new order with old order items' do
