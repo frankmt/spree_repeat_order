@@ -85,7 +85,7 @@ describe Spree::Admin::RepeatedOrdersController do
       past_order.stub(:completed_at).and_return nil
 
       spree_post :create, number: "ABC1"
-      response.should redirect_to('/admin/orders/ABC1')
+      response.should redirect_to('/admin/orders/ABC1/edit')
     end
 
     describe 'merging with current order' do

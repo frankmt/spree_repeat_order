@@ -21,7 +21,7 @@ module Spree
           redirect_to(admin_orders_path)
         else
           flash[:error] = 'Oops.. something went wrong and the order could not be duplicated'
-          redirect_to(admin_order_path(past_order.number))
+          redirect_to(edit_admin_order_path(past_order.number))
         end
 
       end
