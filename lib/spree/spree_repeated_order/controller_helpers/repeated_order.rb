@@ -6,7 +6,9 @@ module Spree
         def duplicate_order(past_order, new_order)
           new_line_items = []
           past_order.line_items.each do |line_item|
-            new_line_items << line_item.dup if (line_item.product && line_item.product.available? && !line_item.product.deleted?)
+            new_line_item = line_item.dup if (line_item.product && line_item.product.available? && !line_item.product.deleted?)
+            new_line_item.reload_price
+            new_line_items << new_line_item
           end
 
           new_order.line_items = new_line_items
