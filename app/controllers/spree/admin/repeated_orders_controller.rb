@@ -13,7 +13,8 @@ module Spree
 
         success = true
         success = success && !past_order.completed_at.blank?
-        success = success && new_order.save
+        success = success && new_order.generate_order_number #forcing number generation since we are skipping validation
+        success = success && new_order.save(validate: false)
         success = success && merge_with_current_order(new_order)
 
         if success
@@ -33,7 +34,7 @@ module Spree
 
         user_last_incomplete_order = user.last_incomplete_spree_order
         new_order.merge!(user_last_incomplete_order, user) if user_last_incomplete_order
-        new_order.save
+        new_order.save(validate: false)
       end
 
       def duplicate_address(past_order, new_order)

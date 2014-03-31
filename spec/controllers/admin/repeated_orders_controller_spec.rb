@@ -51,6 +51,17 @@ describe Spree::Admin::RepeatedOrdersController do
       response.should be_redirect
     end
 
+    it 'should skip validation and force number generation' do
+      Spree::Order.should_receive(:find_by).with(number: 'ABC1').and_return(past_order)
+      Spree::Order.stub(:new).and_return(new_order)
+
+      new_order.should_receive(:generate_order_number).and_return(true)
+      new_order.should_receive(:save).with(validate: false).and_return(true)
+
+      spree_post :create, number: "ABC1"
+      response.should be_redirect
+    end
+
     it 'should skip items that dont exist or are not available' do
       Spree::Order.should_receive(:find_by).with(number: 'ABC1').and_return(past_order)
       Spree::Order.stub(:new).and_return(new_order)
