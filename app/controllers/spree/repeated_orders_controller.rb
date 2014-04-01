@@ -7,7 +7,7 @@ module Spree
 
     def create
       past_order = Spree::Order.find_by(number: params[:number])
-      new_order = current_order(true)
+      new_order = current_order(create_order_if_necessary: true)
 
       duplicate_order(past_order, new_order)
 
