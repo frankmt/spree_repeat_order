@@ -39,6 +39,16 @@ describe Spree::Admin::RepeatedOrdersController do
       line_item_clone_2.stub(:reload_price)
     end
 
+    it 'should update order totals' do
+      Spree::Order.should_receive(:find_by).with(number: 'ABC1').and_return(past_order)
+      Spree::Order.stub(:new).and_return(new_order)
+
+      new_order.should_receive(:update_totals)
+      new_order.should_receive(:persist_totals)
+
+      spree_post :create, number: "ABC1"
+    end
+
     it 'should create new order with old order items' do
       Spree::Order.should_receive(:find_by).with(number: 'ABC1').and_return(past_order)
       Spree::Order.stub(:new).and_return(new_order)
