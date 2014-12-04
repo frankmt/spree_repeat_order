@@ -7,7 +7,7 @@ module Spree
           new_line_items = []
           past_order.line_items.each do |line_item|
             if (line_item.product && line_item.product.available? && !line_item.product.deleted?)
-              new_line_item = line_item.dup
+              new_line_item = line_item.duplicate
               new_line_item.reload_price
               new_line_items << new_line_item
             end

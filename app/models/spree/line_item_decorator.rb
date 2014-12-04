@@ -1,5 +1,9 @@
 Spree::LineItem.class_eval do
 
+  def duplicate
+    self.dup
+  end
+
   def reload_price
     if variant
       self.price = variant.price
