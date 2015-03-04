@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_repeat_order'
-  s.version     = '2.2.2'
+  s.version     = '2.2.10'
   s.summary     = 'Makes it possible to repeat an existing order with one click'
   s.description = ''
   s.required_ruby_version = '>= 2.0.0'
@@ -15,9 +15,9 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree_core', '~> 2.2.5'
-  s.add_dependency 'spree_frontend', '~> 2.2.5'
-  s.add_dependency 'spree_backend', '~> 2.2.5'
+  s.add_dependency 'spree_core', '~> 2.2.10'
+  s.add_dependency 'spree_frontend', '~> 2.2.10'
+  s.add_dependency 'spree_backend', '~> 2.2.10'
 
   s.add_development_dependency 'capybara', '~> 2.1'
   s.add_development_dependency 'coffee-rails'
