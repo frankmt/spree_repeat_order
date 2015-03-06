@@ -155,7 +155,11 @@ describe Spree::Admin::RepeatedOrdersController do
       spree_post :create, number: past_order.number
       response.should redirect_to('/admin/orders')
 
-      last_order = Spree::Order.last
+      puts past_order.inspect
+      puts Spree::Order.all.reload.count
+      puts Spree::Order.first.inspect
+
+      last_order = Spree::Order.all.reload.last
       last_order.line_items.count.should == past_order.line_items.count
       last_order.state.should == 'cart'
       last_order.ship_address.firstname = past_order.ship_address.firstname

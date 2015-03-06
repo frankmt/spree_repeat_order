@@ -11,11 +11,13 @@ module Spree
         duplicate_order(past_order, new_order)
         duplicate_address(past_order, new_order)
 
+        last_incomplete_order = new_order.user.last_incomplete_spree_order
+
         success = true
         success = success && !past_order.completed_at.blank?
         success = success && new_order.generate_order_number #forcing number generation since we are skipping validation
         success = success && new_order.save(validate: false)
-        success = success && merge_with_current_order(new_order)
+        success = success && merge_with_current_order(new_order, last_incomplete_order)
 
         if success
           flash[:success] = "The order has been duplicated. The new order id is #{new_order.number}"
@@ -29,12 +31,13 @@ module Spree
 
       private
 
-      def merge_with_current_order(new_order)
-        user = new_order.user
-
-        user_last_incomplete_order = user.last_incomplete_spree_order
-        new_order.merge!(user_last_incomplete_order, user) if user_last_incomplete_order
-        new_order.save(validate: false)
+      def merge_with_current_order(new_order, last_incomplete_order)
+        if last_incomplete_order
+          new_order.merge!(last_incomplete_order, new_order.user)
+          new_order.save(validate: false)
+        else
+          true
+        end
       end
 
       def duplicate_address(past_order, new_order)

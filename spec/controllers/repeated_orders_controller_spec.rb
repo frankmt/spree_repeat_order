@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Spree::RepeatedOrdersController do
 
-  let(:user) { mock_model Spree::User, :last_incomplete_spree_order => nil, :has_spree_role? => true, :spree_api_key => 'fake' }
+  let(:user) { mock_model(Spree::User, :last_incomplete_spree_order => nil, :has_spree_role? => true, :spree_api_key => 'fake').as_null_object }
 
   describe "create" do
 

@@ -14,6 +14,7 @@ module Spree
           end
 
           new_order.line_items = new_line_items
+          new_order.guest_token = past_order.guest_token
           new_order.update_totals
           new_order.persist_totals if new_order.id
         end
