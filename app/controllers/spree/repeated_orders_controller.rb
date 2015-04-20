@@ -12,6 +12,7 @@ module Spree
       duplicate_order(past_order, new_order)
 
       if new_order.save
+        new_order.contents.update_cart({})
         flash[:success] = 'We have added your past order items to the cart. Just proceed to checkout to complete it.'
       else
         flash[:error] = 'We are sorry, but we could not add your past items to the cart.'
