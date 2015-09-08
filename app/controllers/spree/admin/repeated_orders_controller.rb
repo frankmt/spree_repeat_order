@@ -7,6 +7,7 @@ module Spree
       def create
         past_order = Spree::Order.find_by(number: params[:number])
         new_order = Spree::Order.new
+        new_order.save
 
         duplicate_order(past_order, new_order)
         duplicate_address(past_order, new_order)
