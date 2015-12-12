@@ -1,2 +1,5 @@
 - if @order and @order.completed_at?
-  %li= button_link_to Spree.t(:repeat_order), spree.admin_repeat_order_path(@order.number), :method => :post, :icon => 'icon-copy'
+  -# %li= button_link_to Spree.t(:repeat_order), spree.admin_repeat_order_path(@order.number), :method => :post, :icon => 'con-copy'
+  %li
+    = form_tag(spree.admin_repeat_order_path(@order.number)) do
+      = button_tag Spree.t(:repeat_order), class: "fa fa-copy button"
