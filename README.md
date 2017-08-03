@@ -1,6 +1,7 @@
 Spree Repeat Order
 ================
 
+
 This gem adds a "Repeat Order" button to the My Account page on the Spree store shopfront. This way, a user can quickly add all items from a past order to his shopping cart.
 
 The gem adds the following functionality:
