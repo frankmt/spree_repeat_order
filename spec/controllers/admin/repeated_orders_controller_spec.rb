@@ -67,7 +67,7 @@ describe Spree::Admin::RepeatedOrdersController do
       Spree::Order.should_receive(:find_by).with(number: 'ABC1').and_return(past_order)
       Spree::Order.stub(:new).and_return(new_order)
 
-      new_order.should_receive(:generate_order_number).and_return(true)
+      new_order.should_receive(:generate_number).and_return(true)
       new_order.should_receive(:save).with(validate: false).and_return(true)
 
       spree_post :create, number: "ABC1"
@@ -123,14 +123,14 @@ describe Spree::Admin::RepeatedOrdersController do
         incomplete_order = double(Spree::Order)
         order_user.stub(:last_incomplete_spree_order).and_return(incomplete_order)
         @new_order.should_receive(:merge!).with(incomplete_order, order_user)
-         
+
         spree_post :create, number: "ABC1"
       end
 
       it 'should not merge if user doesnt have a last incomplete order' do
         order_user.stub(:last_incomplete_spree_order).and_return(nil)
         @new_order.should_not_receive(:merge!)
-         
+
         spree_post :create, number: "ABC1"
       end
 

@@ -16,7 +16,7 @@ module Spree
 
         success = true
         success = success && !past_order.completed_at.blank?
-        success = success && new_order.generate_order_number #forcing number generation since we are skipping validation
+        success = success && new_order.generate_number #forcing number generation since we are skipping validation
         success = success && new_order.save(validate: false)
         success = success && merge_with_current_order(new_order, last_incomplete_order)
 
